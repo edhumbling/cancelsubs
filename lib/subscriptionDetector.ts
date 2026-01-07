@@ -1,6 +1,19 @@
 import { Transaction, Subscription, AnalysisResult } from './types';
 import { isLikelySubscription, extractServiceName } from './csvParser';
 
+const KNOWN_CANCEL_URLS: Record<string, string> = {
+    'netflix': 'https://www.netflix.com/cancelplan',
+    'spotify': 'https://www.spotify.com/account/change-plan',
+    'adobe': 'https://account.adobe.com/plans',
+    'dropbox': 'https://www.dropbox.com/account/plan',
+    'zoom': 'https://zoom.us/billing/plan',
+    'hulu': 'https://www.hulu.com/account',
+    'disney': 'https://www.disneyplus.com/account',
+    'hbo': 'https://www.max.com/subscription',
+    'amazon prime': 'https://www.amazon.com/gp/primecentral',
+    'linkedin': 'https://www.linkedin.com/psettings/account',
+};
+
 /**
  * Analyze transactions to detect recurring subscriptions
  */
@@ -104,6 +117,11 @@ function analyzeGroup(key: string, transactions: Transaction[]): Subscription | 
     const serviceName = extractServiceName(firstTxn.description);
     const isKnown = isLikelySubscription(firstTxn.description);
 
+    const normalizedName = serviceName.toLowerCase();
+    const cancelUrl = KNOWN_CANCEL_URLS[normalizedName]
+        || Object.entries(KNOWN_CANCEL_URLS).find(([k]) => normalizedName.includes(k))?.[1]
+        || `https://www.google.com/search?q=how+to+cancel+${encodeURIComponent(serviceName)}`;
+
     return {
         id: generateId(),
         name: serviceName,
@@ -111,6 +129,7 @@ function analyzeGroup(key: string, transactions: Transaction[]): Subscription | 
         amount: Math.round(avgAmount * 100) / 100,
         frequency,
         category: isKnown ? 'investigate' : 'investigate',
+        cancelUrl,
         transactions,
     };
 }

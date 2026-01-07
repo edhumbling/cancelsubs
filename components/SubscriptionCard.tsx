@@ -3,70 +3,82 @@
 import { Subscription } from '@/lib/types';
 
 interface SubscriptionCardProps {
-    subscription: Subscription;
-    isSelected: boolean;
-    onToggle: (id: string) => void;
-    blurred: boolean;
+  subscription: Subscription;
+  isSelected: boolean;
+  onToggle: (id: string) => void;
+  blurred: boolean;
 }
 
 export default function SubscriptionCard({
-    subscription,
-    isSelected,
-    onToggle,
-    blurred
+  subscription,
+  isSelected,
+  onToggle,
+  blurred
 }: SubscriptionCardProps) {
-    const getCategoryColor = () => {
-        switch (subscription.category) {
-            case 'cancel': return 'var(--accent-red)';
-            case 'keep': return 'var(--accent-green)';
-            default: return 'var(--accent-yellow)';
-        }
-    };
+  const getCategoryColor = () => {
+    switch (subscription.category) {
+      case 'cancel': return 'var(--accent-red)';
+      case 'keep': return 'var(--accent-green)';
+      default: return 'var(--accent-yellow)';
+    }
+  };
 
-    const formatAmount = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(amount);
-    };
+  const formatAmount = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
 
-    const getFrequencyLabel = () => {
-        switch (subscription.frequency) {
-            case 'weekly': return '/week';
-            case 'yearly': return '/year';
-            default: return '/mo';
-        }
-    };
+  const getFrequencyLabel = () => {
+    switch (subscription.frequency) {
+      case 'weekly': return '/week';
+      case 'yearly': return '/year';
+      default: return '/mo';
+    }
+  };
 
-    return (
-        <div className={`card ${isSelected ? 'selected' : ''}`}>
-            <label className="checkbox-wrapper">
-                <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => onToggle(subscription.id)}
-                />
-                <span className="checkmark"></span>
-            </label>
+  return (
+    <div className={`card ${isSelected ? 'selected' : ''}`}>
+      <label className="checkbox-wrapper">
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => onToggle(subscription.id)}
+        />
+        <span className="checkmark"></span>
+      </label>
 
-            <div className="info">
-                <span className={`name ${blurred ? 'blurred' : ''}`}>
-                    {subscription.name}
-                </span>
-                <span className="description">{subscription.frequency}</span>
-            </div>
+      <div className="info">
+        <span className={`name ${blurred ? 'blurred' : ''}`}>
+          {subscription.name}
+        </span>
+        <span className="description">{subscription.frequency}</span>
+      </div>
 
-            <div className="amount-section">
-                <span className="amount">
-                    {formatAmount(subscription.amount)}
-                    <span className="frequency">{getFrequencyLabel()}</span>
-                </span>
-                <span className="category-badge" style={{ backgroundColor: getCategoryColor() }}>
-                    {subscription.category}
-                </span>
-            </div>
+      <div className="amount-section">
+        <span className="amount">
+          {formatAmount(subscription.amount)}
+          <span className="frequency">{getFrequencyLabel()}</span>
+        </span>
+        <span className="category-badge" style={{ backgroundColor: getCategoryColor() }}>
+          {subscription.category}
+        </span>
 
-            <style jsx>{`
+        {subscription.cancelUrl && (
+          <a
+            href={subscription.cancelUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cancel-btn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Cancel Now
+          </a>
+        )}
+      </div>
+
+      <style jsx>{`
         .card {
           display: flex;
           align-items: center;
@@ -182,7 +194,25 @@ export default function SubscriptionCard({
           color: white;
           letter-spacing: 0.05em;
         }
+
+        .cancel-btn {
+          margin-top: 0.5rem;
+          padding: 0.25rem 0.75rem;
+          background-color: transparent;
+          border: 1px solid var(--accent-red);
+          color: var(--accent-red);
+          font-size: 0.75rem;
+          font-weight: 600;
+          border-radius: 0.25rem;
+          text-decoration: none;
+          transition: all 0.2s ease;
+        }
+
+        .cancel-btn:hover {
+          background-color: var(--accent-red);
+          color: white;
+        }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 }
