@@ -3,30 +3,38 @@
 /* Dark Theme Design Tokens */
 :root {
   /* Background Colors */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #141414;
-  --bg-tertiary: #1f1f1f;
-  
-  /* Text Colors */
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  
   /* Accent Colors */
-  --accent-blue: #3b82f6;
-  --accent-blue-hover: #2563eb;
-  --accent-green: #22c55e;
-  --accent-yellow: #eab308;
-  --accent-red: #ef4444;
-  
+  --accent-blue: #00f3ff;
+  /* Neon Cyan */
+  --accent-blue-hover: #00c2cc;
+  --accent-green: #0aff00;
+  /* Matrix Green */
+  --accent-yellow: #fcee0a;
+  /* Cyber Yellow */
+  --accent-red: #ff0055;
+  /* Neon Pink */
+
+  /* Background Colors */
+  --bg-primary: #050505;
+  /* Deep Void */
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #111111;
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #555555;
+
   /* Border Colors */
-  --border: #27272a;
-  --border-dashed: #3f3f46;
-  --border-hover: #52525b;
-  
-  /* Spacing */
+  --border: #1f1f1f;
+  --border-dashed: #333333;
+  --border-hover: #00f3ff;
+  /* Neon hover default */
+
   --container-max: 720px;
   --container-padding: 1.5rem;
+
+  --glow-cyan: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.3);
 }
 
 /* Base Styles */

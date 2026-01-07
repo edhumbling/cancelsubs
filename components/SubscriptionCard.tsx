@@ -91,12 +91,15 @@ export default function SubscriptionCard({
         }
         
         .card:hover {
-          border-color: var(--border-hover);
+          border-color: var(--accent-blue);
+          box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+          transform: translateY(-2px);
         }
         
         .card.selected {
           border-color: var(--accent-blue);
-          background-color: rgba(59, 130, 246, 0.05);
+          background-color: rgba(0, 243, 255, 0.03);
+          box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
         }
         
         .checkbox-wrapper {
@@ -128,6 +131,7 @@ export default function SubscriptionCard({
         .checkbox-wrapper input:checked + .checkmark {
           background-color: var(--accent-blue);
           border-color: var(--accent-blue);
+          box-shadow: 0 0 10px var(--accent-blue);
         }
         
         .checkbox-wrapper input:checked + .checkmark::after {

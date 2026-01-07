@@ -4,7 +4,8 @@ import { useRef } from 'react';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { parseCSV } from '@/lib/csvParser';
 import { detectSubscriptions } from '@/lib/subscriptionDetector';
-import { AnalysisResult } from '@/lib/types';
+import { AnalysisResult, Subscription } from '@/lib/types';
+import ParsingAnimation from './ParsingAnimation';
 
 interface FileUploadZoneProps {
   onAnalysisComplete?: (result: AnalysisResult) => void;
@@ -61,16 +62,16 @@ export default function FileUploadZone({ onAnalysisComplete }: FileUploadZonePro
       const aiSubscriptions = data.subscriptions;
 
       const totalMonthly = aiSubscriptions
-        .filter((s: any) => s.frequency === 'monthly')
-        .reduce((sum: number, s: any) => sum + s.amount, 0);
+        .filter((s: Subscription) => s.frequency === 'monthly')
+        .reduce((sum: number, s: Subscription) => sum + s.amount, 0);
 
       const totalYearly = aiSubscriptions
-        .filter((s: any) => s.frequency === 'yearly')
-        .reduce((sum: number, s: any) => sum + s.amount, 0) + (totalMonthly * 12);
+        .filter((s: Subscription) => s.frequency === 'yearly')
+        .reduce((sum: number, s: Subscription) => sum + s.amount, 0) + (totalMonthly * 12);
 
       const potentialSavings = aiSubscriptions
-        .filter((s: any) => s.category === 'cancel')
-        .reduce((sum: number, s: any) => {
+        .filter((s: Subscription) => s.category === 'cancel')
+        .reduce((sum: number, s: Subscription) => {
           const yearly = s.frequency === 'yearly' ? s.amount : s.amount * 12;
           return sum + yearly;
         }, 0);
@@ -127,11 +128,7 @@ export default function FileUploadZone({ onAnalysisComplete }: FileUploadZonePro
         />
 
         {uploadState === 'processing' ? (
-          <div className="content">
-            <div className="spinner"></div>
-            <p className="primary-text">Analyzing your statements...</p>
-            <p className="secondary-text">Finding subscriptions</p>
-          </div>
+          <ParsingAnimation />
         ) : uploadState === 'error' ? (
           <div className="content">
             <p className="primary-text error-text">{error}</p>
