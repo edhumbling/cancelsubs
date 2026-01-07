@@ -6,16 +6,24 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY,
 });
 
+interface AIResponseSubscription {
+    name: string;
+    amount: number;
+    frequency: 'monthly' | 'yearly' | 'weekly' | 'unknown';
+    category: 'cancel' | 'keep' | 'investigate';
+    cancel_url?: string;
+}
+
 export async function POST(req: Request) {
     try {
-        const { transactions } = await req.json();
+        const { transactions }: { transactions: Transaction[] } = await req.json();
 
         if (!transactions || !Array.isArray(transactions) || transactions.length === 0) {
             return NextResponse.json({ error: 'No transactions provided' }, { status: 400 });
         }
 
         // Limit to 200 transactions per batch to fit in context/avoid time limits
-        const batch = transactions.slice(0, 200).map(t =>
+        const batch = transactions.slice(0, 200).map((t: Transaction) =>
             `${t.date} | ${t.description} | $${t.amount}`
         ).join('\n');
 
@@ -66,12 +74,11 @@ export async function POST(req: Request) {
         const result = JSON.parse(content);
 
         // Add IDs and ensure valid structure
-        const subscriptions: Subscription[] = (result.subscriptions || []).map((sub: any) => ({
+        const subscriptions: Subscription[] = (result.subscriptions || []).map((sub: AIResponseSubscription) => ({
             id: Math.random().toString(36).substring(2, 9),
             name: sub.name || 'Unknown Subscription',
             description: sub.name, // Use name as description since we don't have original txn link easily
             amount: Number(sub.amount) || 0,
-            frequency: sub.frequency || 'monthly',
             frequency: sub.frequency || 'monthly',
             category: sub.category || 'investigate',
             cancelUrl: sub.cancel_url,
